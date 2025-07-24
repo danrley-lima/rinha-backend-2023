@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/joho/godotenv"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
 type Person struct {
@@ -70,8 +71,14 @@ func check(err error) {
 }
 
 func main() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/pessoas", handlerPeople)
+
 	fmt.Println("Rodando em http://localhost:8081")
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
